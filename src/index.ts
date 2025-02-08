@@ -3,6 +3,8 @@ import { json } from "body-parser";
 import authRoutes from "./routes/authRoutes";
 
 const app = express();
+const host = "192.168.1.11";
+const port = parseInt(process.env.PORT ?? '6000', 10);
 
 app.use(json());
 
@@ -14,7 +16,6 @@ app.use(json());
 
 app.use("/auth", authRoutes);
 
-const port = process.env.PORT ?? 6000;
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+app.listen(port, host, () => {
+    console.log(`Server is running on ${host}:${port}`);
 });
