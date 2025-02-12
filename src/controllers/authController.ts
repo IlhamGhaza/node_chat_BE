@@ -54,7 +54,7 @@ export const register = async (req: Request, res: Response) => {
     }
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response): Promise<any> => {
     const { email, password } = req.body;
     try {
         const result = await pool.query(

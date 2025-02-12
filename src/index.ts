@@ -1,12 +1,24 @@
 import express, { Request, Response } from "express";
 import { json } from "body-parser";
+import http from "http";
+import { Server } from "socket.io";
 import authRoutes from "./routes/authRoutes";
 import conversationRoutes from "./routes/conversationRoutes"
+import messageRoutes from "./routes/messageRoutes";
+import { saveMessage } from "./controllers/messageContrroller";
+import contactRoutes from "./routes/contactRoutes";
 
 const app = express();
 const host = "192.168.1.11";
 const port = parseInt(process.env.PORT ?? '6000', 10);
+const server = http.createServer(app);
 
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+        // methods: ["GET", "POST"],
+    },
+});
 app.use(json());
 
 // TODO : uncomment this to test the server
@@ -17,7 +29,33 @@ app.use(json());
 
 app.use("/auth", authRoutes);
 app.use('/conversations', conversationRoutes);
+app.use('/messages', messageRoutes);
+app.use("/contacts", contactRoutes);
 
-app.listen(port, host, () => {
+io.on("connection", (socket) => {
+    console.log("A user connected", socket.id);
+    socket.on('joinConversation', (conversationId: string) => {
+        socket.join(conversationId);
+        console.log("User joined conversation", conversationId);
+    });
+    //send message
+    socket.on(
+        "sendMessage",
+        (message) =>
+            async (conversationId: string, senderId: string, content: string) => {
+                try {
+                    const savedMessage = await saveMessage(conversationId, senderId, content);
+                    console.log("Saved message:", savedMessage);
+                    io.to(conversationId).emit("newMessage", savedMessage);
+                } catch (error) {
+                    console.error("Error sending message:", error);
+                }
+            });
+    socket.on("disconnect", () => {
+        console.log("A user disconnected", socket.id);
+    });
+});
+
+server.listen(port, host, () => {
     console.log(`Server is running on ${host}:${port}`);
 });
