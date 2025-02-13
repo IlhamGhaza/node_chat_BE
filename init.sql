@@ -104,6 +104,9 @@ CREATE TRIGGER update_contacts_modtime
     BEFORE UPDATE ON contacts
     FOR EACH ROW
     EXECUTE FUNCTION update_modified_column();
+--
+ALTER TABLE users
+ADD COLUMN photo_profile VARCHAR(255);
 
 --insert data 
 INSERT INTO users (username, email, password)
@@ -122,4 +125,3 @@ VALUES
 SELECT last_value FROM users_id_seq;
 SELECT last_value FROM conversations_id_seq;
 SELECT last_value FROM messages_id_seq;
-

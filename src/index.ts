@@ -7,9 +7,10 @@ import conversationRoutes from "./routes/conversationRoutes"
 import messageRoutes from "./routes/messageRoutes";
 import { saveMessage } from "./controllers/messageContrroller";
 import contactRoutes from "./routes/contactRoutes";
+import userRoutes from "./routes/userRoutes";
 
 const app = express();
-const host = "192.168.1.11";
+const host = "0.0.0.0";
 const port = parseInt(process.env.PORT ?? '6000', 10);
 const server = http.createServer(app);
 
@@ -22,15 +23,18 @@ const io = new Server(server, {
 app.use(json());
 
 // TODO : uncomment this to test the server
-// app.get("/", (req: Request, res: Response) => {
-//     console.log("Hello World!");
-//     res.send("yes it works");
-// });
+app.get("/", (req: Request, res: Response) => {
+    console.log("Hello World!");
+    res.send("yes it works");
+});
 
 app.use("/auth", authRoutes);
 app.use('/conversations', conversationRoutes);
 app.use('/messages', messageRoutes);
 app.use("/contacts", contactRoutes);
+app.use('/uploads', express.static('public/uploads'));
+app.use("/user", userRoutes);
+
 
 io.on("connection", (socket) => {
     console.log("A user connected", socket.id);
