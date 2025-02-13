@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: node_chat_api
+    restart: unless-stopped
+    ports:
+      - "6000:3000" # Change the port number as needed
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=chatdb
+    depends_on:
+      - postgres
+    networks:
+      - chat_network
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: node_chat_db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=chatdb
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - chat_network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "chatdb"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+volumes:
+  postgres_data:
+
+networks:
+  chat_network:
+    driver: bridge
