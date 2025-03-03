@@ -25,10 +25,9 @@ export const fetchAllMessagesByConversationId = async (req: Request, res: Respon
             SELECT 
                 m.id,
                 m.content,
+                m.sender_id,
                 m.conversation_id,
-                m.created_at,
-                c.participant_one,
-                c.participant_two
+                m.created_at
             FROM messages m
             JOIN conversations c ON m.conversation_id = c.id
             WHERE m.conversation_id = $1
@@ -60,12 +59,13 @@ export const saveMessage = async (conversationId: string, senderId: string, cont
         const result = await pool.query(`
             INSERT INTO messages (
                 conversation_id,
+                sender_id,
                 content,
                 created_at,
                 updated_at
-            ) VALUES ($1, $2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-            RETURNING *`,
-            [conversationId, content]
+            ) VALUES ($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            RETURNING id, content, sender_id, conversation_id, created_at`,
+            [conversationId, senderId, content]
         );
 
         return result.rows[0];
