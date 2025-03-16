@@ -25,9 +25,15 @@ export const fetchContact = async (req: Request, res: Response<ApiResponse<any>>
             ORDER BY u.username ASC
         `, [userId]);
 
+        // Process the results to replace null photo_profile with first letter of username
+        const processedContacts = result.rows.map(contact => ({
+            ...contact,
+            photo_profile: contact.photo_profile || (contact.username ? contact.username.charAt(0).toUpperCase() : 'U')
+        }));
+
         return res.json({
             message: "Contacts retrieved successfully",
-            data: result.rows
+            data: processedContacts
         });
     } catch (error) {
         console.error('Error fetching contacts:', error);
@@ -37,6 +43,7 @@ export const fetchContact = async (req: Request, res: Response<ApiResponse<any>>
         });
     }
 };
+
 export const fetchAllContacts = async (req: Request, res: Response<ApiResponse<any>>) => {
     const userId = req.user?.id;
 
@@ -60,9 +67,15 @@ export const fetchAllContacts = async (req: Request, res: Response<ApiResponse<a
             ORDER BY u.username ASC
         `, [userId]);
 
+        // Process the results to replace null photo_profile with first letter of username
+        const processedContacts = result.rows.map(contact => ({
+            ...contact,
+            photo_profile: contact.photo_profile || (contact.username ? contact.username.charAt(0).toUpperCase() : 'U')
+        }));
+
         return res.json({
             message: "Contacts retrieved successfully",
-            data: result.rows
+            data: processedContacts
         });
     } catch (error) {
         console.error('Error fetching contacts:', error);
@@ -151,9 +164,16 @@ export const addContact = async (req: Request, res: Response<ApiResponse<any>>) 
             WHERE u.id = $1
         `, [contactId]);
 
+        // Process the contact to replace null photo_profile with first letter of username
+        const processedContact = contactDetails.rows[0] ? {
+            ...contactDetails.rows[0],
+            photo_profile: contactDetails.rows[0].photo_profile ||
+                (contactDetails.rows[0].username ? contactDetails.rows[0].username.charAt(0).toUpperCase() : 'U')
+        } : null;
+
         return res.status(201).json({
             message: "Contact added successfully",
-            data: contactDetails.rows[0] || null
+            data: processedContact
         });
     } catch (error) {
         console.error('Error adding contact:', error);
@@ -209,4 +229,3 @@ export const deleteContact = async (req: Request, res: Response<ApiResponse<any>
         });
     }
 };
-

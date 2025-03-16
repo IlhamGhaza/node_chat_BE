@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import pool from "../models/db";
 import { ApiResponse } from "../types/api";
+import { createToken } from "../middlewares/authMiddleware";
 
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET ?? "woriSecretK3y";
@@ -83,7 +84,7 @@ export const login = async (req: Request, res: Response<ApiResponse<any>>) => {
             });
         }
 
-        const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1d' });
+        const token = createToken(user.id);
 
         return res.status(200).json({
             message: "Login successful",
