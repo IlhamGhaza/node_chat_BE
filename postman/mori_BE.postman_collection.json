@@ -461,7 +461,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"contactID\": \"39\"\r\n}\r\n",
+							"raw": "{\r\n//   \"contactID\": \"39\"\r\n//\"email\" : \"james@gmail.com\"\r\n \"username\" : \"james\"\r\n\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -546,6 +546,140 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"message\": \"Contact added successfully\",\n    \"data\": []\n}"
+						},
+						{
+							"name": "200 (by email)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n//   \"contactID\": \"39\"\r\n \"email\" : \"james@gmail.com\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/contacts/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"contacts",
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "130"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"82-4LcrK1epvtCHSaDqUvx6nauxR1A\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 22 Mar 2025 10:29:37 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Contact added successfully\",\n    \"data\": {\n        \"contact_id\": 39,\n        \"username\": \"james\",\n        \"email\": \"james@gmail.com\",\n        \"photo_profile\": \"J\"\n    }\n}"
+						},
+						{
+							"name": "200 (by username)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n//   \"contactID\": \"39\"\r\n//\"email\" : \"james@gmail.com\"\r\n \"username\" : \"james\"\r\n\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/contacts/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"contacts",
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "130"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"82-4LcrK1epvtCHSaDqUvx6nauxR1A\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 22 Mar 2025 10:30:45 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Contact added successfully\",\n    \"data\": {\n        \"contact_id\": 39,\n        \"username\": \"james\",\n        \"email\": \"james@gmail.com\",\n        \"photo_profile\": \"J\"\n    }\n}"
 						}
 					]
 				},
