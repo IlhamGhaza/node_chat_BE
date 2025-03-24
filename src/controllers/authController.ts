@@ -92,9 +92,10 @@ export const login = async (req: Request, res: Response<ApiResponse<any>>) => {
                 user: {
                     id: user.id,
                     username: user.username,
-                    email: user.email
+                    email: user.email,
+                    token
                 },
-                token
+                // token
             }
         });
     } catch (error) {
