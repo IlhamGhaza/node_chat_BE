@@ -31,8 +31,6 @@ CREATE TRIGGER update_users_modtime
 
 SELECT * FROM users;
 --conversation table
-CREATE TABLE conversations
-
 CREATE TABLE conversations (
     id SERIAL PRIMARY KEY,
     participant_one INTEGER NOT NULL REFERENCES users (id),
@@ -42,14 +40,21 @@ CREATE TABLE conversations (
     deleted_at TIMESTAMP WITH TIME ZONE
 );
 
-CREATE UNIQUE INDEX idx_conversations_participant_one ON conversations (participant_one)
+-- Membuat indeks unik pada pasangan peserta yang memastikan pasangan peserta unik
+CREATE UNIQUE INDEX idx_conversations_unique_pair ON conversations (
+    LEAST(
+        participant_one,
+        participant_two
+    ),
+    GREATEST(
+        participant_one,
+        participant_two
+    )
+)
 WHERE
     deleted_at IS NULL;
 
-CREATE UNIQUE INDEX idx_conversations_participant_two ON conversations (participant_two)
-WHERE
-    deleted_at IS NULL;
-
+-- Trigger untuk memperbarui kolom updated_at
 CREATE OR REPLACE FUNCTION update_modified_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -62,6 +67,7 @@ CREATE TRIGGER update_conversations_modtime
     BEFORE UPDATE ON conversations
     FOR EACH ROW
     EXECUTE FUNCTION update_modified_column();
+
 --message table
 CREATE TABLE messages (
     id SERIAL PRIMARY KEY,
@@ -141,6 +147,13 @@ INSERT INTO
 VALUES (2, 37);
 
 INSERT INTO
+    conversations (
+        participant_one,
+        participant_two
+    )
+VALUES (2, 39);
+
+INSERT INTO
     messages (
         conversation_id,
         sender_id,
@@ -159,6 +172,70 @@ VALUES (
         37,
         'Halo Ilham, saya baik-baik saja. Terima kasih!'
     );
+
+INSERT INTO
+    messages (
+        conversation_id,
+        sender_id,
+        content
+    )
+VALUES (3, 2, 'minjem duit');
+
+INSERT INTO
+    messages (
+        conversation_id,
+        sender_id,
+        content
+    )
+VALUES (3, 37, 'ga mau');
+
+INSERT INTO
+    messages (
+        conversation_id,
+        sender_id,
+        content
+    )
+VALUES (3, 2, 'pelit lu');
+
+INSERT INTO
+    messages (
+        conversation_id,
+        sender_id,
+        content
+    )
+VALUES (3, 37, 'bodo');
+
+INSERT INTO
+    messages (
+        conversation_id,
+        sender_id,
+        content
+    )
+VALUES (8, 2, 'hola');
+
+INSERT INTO
+    messages (
+        conversation_id,
+        sender_id,
+        content
+    )
+VALUES (8, 39, '???');
+
+INSERT INTO
+    messages (
+        conversation_id,
+        sender_id,
+        content
+    )
+VALUES (8, 2, 'salken, ini james');
+
+INSERT INTO
+    messages (
+        conversation_id,
+        sender_id,
+        content
+    )
+VALUES (8, 39, 'salken');
 
 INSERT INTO contacts (user_id, contact_id) VALUES (2, 37);
 
